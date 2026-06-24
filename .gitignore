@@ -1,0 +1,7 @@
+result
+result-*
+*.age
+*.key
+backup-ssh-ed25519*
+.direnv/
+# hardware-configuration.nix: gerado e commitado NO ALVO (não existe aqui ainda)
