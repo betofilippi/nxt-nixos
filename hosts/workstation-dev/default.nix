@@ -8,6 +8,7 @@
     ../../modules/nvidia.nix
     ../../modules/desktop-cosmic.nix
     ../../modules/packages.nix
+    ../../modules/backup.nix
   ];
 
   networking.hostName = "workstation-dev";

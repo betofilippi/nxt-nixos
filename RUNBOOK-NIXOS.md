@@ -3,6 +3,13 @@
 > Este runbook é **auto-suficiente**: dá pra seguir SEM Claude. Os identificadores são REAIS
 > (medidos 2026-06-24). NUNCA use `/dev/sdX`/`/dev/nvmeXn1` p/ decidir alvo — use SERIAL/UUID.
 
+## STATUS (handoff 2026-06-24 — preparado com o dev fora)
+**PRONTO** (não-destrutivo): backup cifrado 57G no cofre + Dropbox (Fase -1), flake+runbook no GitHub
+(`github.com/betofilippi/nxt-nixos`) + cofre, ~25 recursos em `/var/mnt/modelos/nxt-repositorio/recursos/`,
+ISO NixOS verificada (`/var/mnt/modelos/nixos-iso/`), `_maquina` (restore) completo, transcripts no cofre.
+**◀ VOCÊ ESTÁ AQUI** → Fase 0 (FÍSICO, exige você presente) → Fase 1 (install, guiado ao vivo).
+**Nada destrutivo foi/será feito sem você presente + o cofre fisicamente desconectado.**
+
 ## Identificadores (decorar a diferença)
 - **APAGAR** (vira NixOS): `/dev/disk/by-id/nvme-ADATA_LEGEND_960_2P332L1SHAXC` (1,9T, ESP do Fedora).
 - **PRESERVAR** (cofre): serial `2P482LAJ99HF` · UUID `ab7a243a-e346-415e-a3d5-1933ab3b5c4e` · `LABEL=modelos`.
