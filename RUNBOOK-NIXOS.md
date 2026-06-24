@@ -9,9 +9,9 @@
 
 ---
 ## Fase -1 — Backup (GATE) ✅ feito nesta sessão
-- Blob cifrado `cofre-irreemplacavel-2026-06-24.tar.age` (57G) no cofre + **Dropbox** (`dropbox:nxt-cofre-backup/`).
-- **Chave privada** p/ decifrar: `/var/mnt/modelos/_backup-stage/backup-ssh-ed25519` → **SALVAR OFFLINE** (sem ela o backup é lixo).
-- Restore: `age -d -i <chave> blob.tar.age | tar -xf -`.
+- Blob cifrado de 57G dividido em **9 partes** `cofre.NN.part` (`_backup-stage/parts/`) no cofre + **Dropbox** (`dropbox:nxt-cofre-backup/parts/`). (Subido em paralelo p/ velocidade.)
+- **Chave privada** p/ decifrar: `/var/mnt/modelos/_backup-stage/backup-ssh-ed25519` (também temporariamente em `dropbox:nxt-TEMP-apagar-key/` — **excluir definitivamente** após salvar offline) → **SALVAR OFFLINE** (sem ela o backup é lixo).
+- Restore: baixar as partes e `cat parts/cofre.*.part | age -d -i <chave> | tar -xf -`.
 
 ## Fase 0 — Segurança física (responsabilidade do usuário)
 1. Confirmar o backup acima (e a chave salva offline).
