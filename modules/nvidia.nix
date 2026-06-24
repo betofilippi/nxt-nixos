@@ -28,21 +28,24 @@
     # (a GPU de render é escolhida por firmware + WLR_DRM_DEVICES). Pinagem feita abaixo.
   };
 
-  # ── GSP firmware OFF — CRÍTICO p/ Blackwell ──
-  # GB202 sofre crash/Xid sob carga sustentada de inferência com GSP ligado.
-  # (Pode até estar relacionado aos freezes que vínhamos vendo.)
-  boot.extraModprobeConfig = ''
-    options nvidia NVreg_EnableGpuFirmware=0
-  '';
+  # ── GSP firmware ──
+  # ⚠️ CORRIGIDO (onboarding 2026-06-24): `NVreg_EnableGpuFirmware=0` só vale no driver
+  #   PROPRIETÁRIO. A Blackwell EXIGE módulos OPEN, e o open REQUER GSP firmware → NÃO dá
+  #   pra desligar (a flag é no-op/ignorada no open). O hang tipo #1111 do RTX PRO 6000 é
+  #   mitigado por VERSÃO de driver/kernel, não por desligar GSP.
+  #   (VALIDAR no alvo; ver recursos/nixos-nvidia-cuda no cofre.)
 
-  # ── Fixar a 3050 como GPU de display/render do compositor (Wayland) ──
-  # 81:00.0 = RTX 3050 (display). A Blackwell (c1:00.0) fica fora do render, visível ao CUDA.
-  # ⚠️ VALIDAR-NO-ALVO os nomes/efeito destas env no COSMIC do alvo.
+  # ── Seleção da GPU de display no COSMIC ──
+  # ⚠️ CORRIGIDO (onboarding 2026-06-24): cosmic-comp é **Smithay**, NÃO wlroots → IGNORA
+  #   `WLR_DRM_DEVICES`/`COSMIC_RENDER_DEVICE`. O display sai na GPU onde os MONITORES estão
+  #   FISICAMENTE ligados (a 3050); a Blackwell (sem monitor) fica livre p/ CUDA — sem pinar via env.
   environment.sessionVariables = {
-    WLR_DRM_DEVICES = "/dev/dri/by-path/pci-0000:81:00.0-card";
-    # COSMIC-specific (confirmar no alvo):
-    COSMIC_RENDER_DEVICE = "/dev/dri/by-path/pci-0000:81:00.0-card";
+    NIXOS_OZONE_WL = "1";
+    GBM_BACKEND = "nvidia-drm";
+    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
   };
+  # VALIDAR no alvo: confirmar que o COSMIC renderiza/scanout na 3050 e a Blackwell aparece
+  #   só no nvidia-smi/CUDA. Ver recursos/cosmic/docs/nvidia-dual-gpu.md no cofre.
 
   # CUDA disponível no sistema (a Blackwell é o device de compute).
   # Habilitar conforme uso; sem o cache binário certo, compila local (ver flake.nix nixConfig).
