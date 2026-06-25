@@ -61,14 +61,21 @@ else
   read -rp ">>> Enter p/ continuar mesmo assim, Ctrl-C p/ parar: " _
 fi
 
-# ── 5. instalar (pede a senha do root) ──
-echo; echo "### 5 — nixos-install (vai pedir a senha do root)"
+# ── 5. instalar (root fica travado; você cria a senha do login no passo 6) ──
+echo; echo "### 5 — nixos-install (instala o sistema; root travado, login por sudo)"
 git config --global --add safe.directory "$PWD" 2>/dev/null || true
 git add -A 2>/dev/null || true   # o flake precisa enxergar o hardware-config + nvidia.nix patchados
-nixos-install --flake .#workstation-dev
+nixos-install --flake .#workstation-dev --no-root-passwd
+
+# ── 6. senha do SEU usuário (betofilippi) = a senha do LOGIN ──
+echo
+echo "════════ Crie a SENHA DO SEU LOGIN (usuário betofilippi) ════════"
+echo ">>> NÃO use os 5 dead-keys: apóstrofo  aspas  til  circunflexo  crase"
+echo ">>> (pode letras, números, e . - _ ! @ # \$ % & * + =)"
+nixos-enter --root /mnt -c 'passwd betofilippi'
 
 echo
 echo "════════ CONCLUÍDO ════════"
-echo ">>> Reboot quando quiser (retire o USB)."
+echo ">>> Digite:  reboot   (e retire o USB)."
 echo ">>> Depois: checkpoints (a)-(d) → cofre volta RW sozinho → restore do _maquina (RUNBOOK Fase 3)."
 echo ">>> E volte o repo a privado:  gh repo edit betofilippi/nxt-nixos --visibility private"
