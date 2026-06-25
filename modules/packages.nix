@@ -4,7 +4,7 @@
   # (devShells/direnv) ou restauradas via mise do _maquina — não inchar o sistema.
   environment.systemPackages = with pkgs; [
     # CLI base
-    gh ripgrep fd bat fzf jq yq-go btop du-dust eza zoxide direnv
+    gh ripgrep fd bat fzf jq yq-go btop dust eza zoxide direnv
     git-lfs gnumake unzip p7zip tree file
     # runtime p/ Claude Code (binário dynamically-linked → nix-ld cobre; ver common.nix)
     nodejs_22
