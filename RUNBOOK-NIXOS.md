@@ -28,7 +28,8 @@ ISO NixOS verificada (`/var/mnt/modelos/nixos-iso/`), `_maquina` (restore) compl
 
 ## Fase 1 — Instalar
 1. Boot no **USB do instalador NixOS unstable**. Rede OK (`ping github.com`).
-2. `sudo -i` ; `nix-env -iA nixos.git` (ou já vem). `git clone <repo-privado nxt-nixos>` ; `cd nxt-nixos`.
+2. `sudo -i` ; `nix-env -iA nixos.git` (ou já vem). **`git clone https://github.com/betofilippi/nxt-nixos`** ; `cd nxt-nixos`.
+   (Repo está PÚBLICO p/ o install — clone anônimo, sem login. **Voltar pra privado depois:** `gh repo edit betofilippi/nxt-nixos --visibility private`.)
 3. **Conferir o alvo do disko**: `ls -l /dev/disk/by-id/ | grep 2P332L1SHAXC` (tem que existir e ser o disco de sistema). O cofre (`2P482...`) NÃO deve aparecer (está desconectado).
 4. **Particionar+formatar (DESTRUTIVO, só o disco de sistema)**:
    `sudo nix --experimental-features "nix-command flakes" run github:nix-community/disko/latest -- --mode destroy,format,mount ./hosts/workstation-dev/disko.nix`
