@@ -33,6 +33,8 @@ Passos:
 1. Boot no **USB do instalador NixOS unstable**. Rede OK (`ping github.com`).
 2. `sudo -i` ; `nix-env -iA nixos.git` (ou já vem). **`git clone https://github.com/betofilippi/nxt-nixos`** ; `cd nxt-nixos`.
    (Repo está PÚBLICO p/ o install — clone anônimo, sem login. **Voltar pra privado depois:** `gh repo edit betofilippi/nxt-nixos --visibility private`.)
+
+   **⚡ ATALHO (recomendado): `sudo bash instalar.sh`** faz os passos 3-7 de uma vez (guard → confirmação `APAGAR` → disko → hardware-config → **auto-seleção do driver NVIDIA** → `nixos-install`). Seu único input: digitar `APAGAR` e a senha do root. Os passos 3-7 abaixo são o equivalente manual (fallback).
 3. **GUARD anti-wipe (OBRIGATÓRIO — o cofre está plugado)**: `sudo bash scripts/guard-disks.sh`.
    Ele identifica os 2 discos por serial, **trava o cofre (`2P482LAJ99HF`) em READ-ONLY** e confirma que o disko apaga SÓ o sistema (`2P332L1SHAXC`). **Só prossiga se imprimir `✅ SEGURO`.**
 4. **Particionar+formatar (DESTRUTIVO, só o disco de sistema)**:
