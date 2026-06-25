@@ -39,11 +39,16 @@
   # IOMMU já vem ligado por hardware; manter (medido: iommu=pt no Fedora).
   boot.kernelParams = [ "iommu=pt" ];
 
-  # ── Locale / timezone ──
+  # ── Locale / timezone / teclado (= config REAL medida: US-International) ──
   time.timeZone = "America/Sao_Paulo";
   i18n.defaultLocale = "pt_BR.UTF-8";
-  console.keyMap = "br";
-  services.xserver.xkb = { layout = "us"; variant = "intl"; };
+  console.keyMap = "us";   # TTY: teclado físico us-intl → "us" cobre os símbolos (acento dead-key só no gráfico)
+  services.xserver.xkb = {
+    layout = "us";
+    variant = "intl";
+    model = "microsoftpro";
+    options = "terminate:ctrl_alt_bksp";
+  };
 
   environment.systemPackages = with pkgs; [ git vim wget curl rsync age ];
 }

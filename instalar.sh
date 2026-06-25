@@ -18,6 +18,9 @@ command -v nixos-install >/dev/null 2>&1 || {
   echo "      nunca no sistema atual. ABORTADO (nada foi tocado)."; exit 1; }
 [ "$(id -u)" = "0" ] || { echo "Rode com sudo:  sudo bash instalar.sh"; exit 1; }
 
+# teclado consistente no console do instalador (teclado físico = US-International)
+loadkeys us 2>/dev/null || true
+
 echo "════════ NXT — instalação NixOS workstation-dev ════════"
 
 # ── 1. GUARD anti-wipe (identifica por serial, trava o cofre READ-ONLY) ──
