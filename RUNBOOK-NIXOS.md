@@ -20,17 +20,21 @@ ISO NixOS verificada (`/var/mnt/modelos/nixos-iso/`), `_maquina` (restore) compl
 - **Chave privada** p/ decifrar: `/var/mnt/modelos/_backup-stage/backup-ssh-ed25519` (também temporariamente em `dropbox:nxt-TEMP-apagar-key/` — **excluir definitivamente** após salvar offline) → **SALVAR OFFLINE** (sem ela o backup é lixo).
 - Restore: baixar as partes e `cat parts/cofre.*.part | age -d -i <chave> | tar -xf -`.
 
-## Fase 0 — Segurança física (responsabilidade do usuário)
-1. Confirmar o backup acima (e a chave salva offline).
-2. **Desligar a máquina e DESPLUGAR o cabo do cofre** (serial `2P482LAJ99HF`). Conferir o serial antes de desconectar.
-3. Na BIOS: **Secure Boot = OFF**. Confirmar boot UEFI.
-4. (Opcional) retirar o pendrive USB `sda`.
+## Fase 0 — Segurança (cofre NÃO desconectável → proteção por SOFTWARE, em camadas)
+O cofre está atrás da GPU/placa-mãe e não dá pra desplugar. A trava física é substituída por **3 camadas**:
+- **disko por by-id**: `disko.nix` mira SÓ o disco de sistema pelo serial `2P332L1SHAXC` — é incapaz de tocar o cofre (independe de ordem de enumeração).
+- **cofre READ-ONLY**: `scripts/guard-disks.sh` trava o cofre (`2P482LAJ99HF`) em read-only no kernel ANTES do disko (Fase 1 passo 3) — qualquer escrita errada falha.
+- **backup**: 57G cifrado no Dropbox + cofre (3ª rede).
+Passos:
+1. Confirmar backup + **chave salva offline**.
+2. BIOS: **Secure Boot = OFF**. Boot UEFI pelo USB.
 
 ## Fase 1 — Instalar
 1. Boot no **USB do instalador NixOS unstable**. Rede OK (`ping github.com`).
 2. `sudo -i` ; `nix-env -iA nixos.git` (ou já vem). **`git clone https://github.com/betofilippi/nxt-nixos`** ; `cd nxt-nixos`.
    (Repo está PÚBLICO p/ o install — clone anônimo, sem login. **Voltar pra privado depois:** `gh repo edit betofilippi/nxt-nixos --visibility private`.)
-3. **Conferir o alvo do disko**: `ls -l /dev/disk/by-id/ | grep 2P332L1SHAXC` (tem que existir e ser o disco de sistema). O cofre (`2P482...`) NÃO deve aparecer (está desconectado).
+3. **GUARD anti-wipe (OBRIGATÓRIO — o cofre está plugado)**: `sudo bash scripts/guard-disks.sh`.
+   Ele identifica os 2 discos por serial, **trava o cofre (`2P482LAJ99HF`) em READ-ONLY** e confirma que o disko apaga SÓ o sistema (`2P332L1SHAXC`). **Só prossiga se imprimir `✅ SEGURO`.**
 4. **Particionar+formatar (DESTRUTIVO, só o disco de sistema)**:
    `sudo nix --experimental-features "nix-command flakes" run github:nix-community/disko/latest -- --mode destroy,format,mount ./hosts/workstation-dev/disko.nix`
 5. **Gerar hardware-configuration.nix**:
@@ -48,9 +52,9 @@ ISO NixOS verificada (`/var/mnt/modelos/nixos-iso/`), `_maquina` (restore) compl
 - **(c)** Teste CUDA mínimo na Blackwell (ex.: `nix shell nixpkgs#cudaPackages.saxpy` ou um tensor).
 - **(d)** `sudo nixos-rebuild switch --flake .#workstation-dev` reaplica limpo + geração anterior aparece no boot.
 
-## Fase 3 — Reconectar cofre + restaurar
-1. Desligar, **replugar o cofre** (serial `2P482LAJ99HF`).
-2. Boot. O mount `/var/mnt/modelos` (UUID, `nofail`) sobe sozinho (já no `default.nix`). `df -h /var/mnt/modelos`.
+## Fase 3 — Cofre (já presente) + restaurar
+1. O cofre nunca saiu — ficou só READ-ONLY durante o install, e o **RO some no reboot**.
+2. Boot. O mount `/var/mnt/modelos` (UUID, `nofail`) sobe sozinho (já no `default.nix`), RW. `df -h /var/mnt/modelos`.
 3. **Claude Code**: `npm i -g @anthropic-ai/claude-code` (sob nix-ld). Restaurar auth/config/memória:
    `cp -a /var/mnt/modelos/_maquina/claude-config/* ~/.claude/` (CLAUDE.md/settings/rules/memory).
    Restaurar `claude-accounts.json` de `_maquina/config-nxt`. Abrir sessão NOVA → lê a memória + transcripts (`_maquina/claude-sessions`).
